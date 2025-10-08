@@ -1,0 +1,16 @@
+# Journal Timeline
+
+## 2025
+| Date       | Title | Description | Hash |
+|-----------|-------|-------------|------|
+| 2025-10-05 | [How to install arch linux](./entries/os-arch-linux/how-to-install-arch-linux.md) | Notes on installing Arch Linux | f3a9c1d2 |
+| 2025-09-28 | [Get Subject Display Name](./entries/utils/get-subject-display-name.md) | Thoughts on parsing folder names for display | a7b2e4f9 |
+| 2025-09-20 | [Timeline](./entries/docs/timeline.md) | Ideas for organizing my journal entries | c1d4a7b8 |
+
+## 2024
+| Date       | Title | Description | Hash |
+|-----------|-------|-------------|------|
+| 2024-11-20 | [Markdown Parser](./entries/utils/markdown-parser.md) | Experimenting with Markdown formatting | d4f5a1b2 |
+| 2024-10-15 | [Initial Setup](./entries/docs/initial-setup.md) | Starting the journal, initial thoughts | b3c9e7f0 |
+
+{TIMELINE}
