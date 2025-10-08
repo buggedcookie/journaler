@@ -4,130 +4,64 @@ internal class Program
 {
     private static void Main(string[] args)
     {
+        Console.ForegroundColor = ConsoleColor.White;
+
         string entriesRootDirectory = "./Test";
-
-        List<JournalEntry> journalEntries = new();
-        if(!Directory.Exists(entriesRootDirectory)) Console.WriteLine("Directory not found: " + entriesRootDirectory);
-
-        foreach (string folderPath in Directory.EnumerateDirectories(entriesRootDirectory))
-        {
-            var journalEntry = JournalEntryFactory.CreateEntry(folderPath);
-            journalEntries.Add(journalEntry);
-        }
         
-        Console.WriteLine("Found {0} journal entries", journalEntries.Count);
+        var journalEntries = JournalEntryFactory.GetEntriesFromDirectory(entriesRootDirectory);
+        //foreach (JournalEntry entry in journalEntries)
+        //{
 
-        foreach (JournalEntry entry in journalEntries)
+        var groupedEntries = journalEntries.OrderBy(c => c.CategoryDisplayName).GroupBy(entry => entry.CategoryDisplayName);
+
+        foreach (var entryByCategory in groupedEntries)
         {
-            Console.WriteLine($"{entry.CategoryDisplayName} | {entry.SubjectDisplayName} | {entry.FolderName}");
-        }
-    }
-
-
-    public record JournalEntry(
-        string FolderDirectory,
-        string FolderName,
-        string CategoryDisplayName,
-        string SubjectDisplayName,
-        Article[] Articles
-    );
-
-    /*
-     * Everything here assumes best case scenario and no mistakes
-     * It's terrible, and unflexible.
-     * TODO: Make the system better in the future
-     */
-
-    public record Article
-    {
-        public required string Title { get; init; }
-        public required DateTime PublishDate { get; init; }
-        public required DateTime UpdateDate { get; init; }
-        public required string FilePath { get; init; }
-        public required string Description { get; init; }
-        public required string Author { get; init; }
-        public required string ContentHash { get; init; }
-    }
-
-    public static class JournalEntryFactory
-    {
-
-        public static JournalEntry CreateEntry(string entryFolderDirectory)
-        {
-            FolderDirectory = entryFolderDirectory;
-            FolderName = GetFolderNameFromDirectory(entryFolderDirectory);
-
-            CategoryDisplayName = GetCategoryDisplayName(FolderName);
-            SubjectDisplayName = GetSubjectDisplayName(FolderName);
-            Articles = GetArticles().ToArray();
-
-            return new JournalEntry(FolderDirectory, FolderName, CategoryDisplayName, SubjectDisplayName, Articles);
-        }
-
-        static string FolderDirectory { get; set; }
-        static string FolderName { get; set; }
-        static string CategoryDisplayName { get; set; }
-        static string SubjectDisplayName { get;  set; }
-        static Article[] Articles { get; set; }
-
-
-        static string GetFolderNameFromDirectory(string folderDirectory)
-        {
-            return folderDirectory
-                .Split("/")
-                .Last();
-        }
-
-        static string GetCategoryDisplayName(string folder)
-        {
-            return string.Join("", folder
-                .Split("-").First());
-            //.Select(s => char.ToUpper(s[0]) + s.Substring(1)));
-        }
-
-        static string GetSubjectDisplayName(string folder)
-        {
-            return string.Join(" ",
-                folder.Split("-", StringSplitOptions.RemoveEmptyEntries).Skip(1)
-                    .Select(s => char.ToUpper(s[0]) + s.Substring(1)));
-        }
-
-        static string GetArticleDisplayName(string folder)
-        {
-            return string.Join(" ",
-                    folder.Split("-", StringSplitOptions.RemoveEmptyEntries)
-                        .Select(s => char.ToUpper(s[0]) + s.Substring(1)))
-                .Split(".")
-                .First();
-        }
-        // "os", "arch", "linux.md" => Arch Linux
-
-        static List<Article> GetArticles()
-        {
-            var files = Directory.GetFiles(FolderDirectory);
-
-            List<Article> articles = new();
-            for (int i = 0; i < files.Length - 1; i++)
+            Console.WriteLine($"> {entryByCategory.Key} [SUBJECTS: {entryByCategory.Count()}]");
+            foreach (var entryBySubject in entryByCategory.OrderBy(c => c.SubjectDisplayName).Select(t => t))
             {
-                Article article = new Article
-                {
-                    Title = GetArticleDisplayName(files[i]
-                        .Split("/",
-                            StringSplitOptions.RemoveEmptyEntries)
-                        .Last()),
-                    PublishDate = DateTime.Today,
-                    UpdateDate = DateTime.Today,
-                    FilePath = files[i],
-                    Description = "null",
-                    Author = "null",
-                    ContentHash = "null"
-                };
-                articles.Add(article);
-            }
+                var articlesCount = entryBySubject.Articles.Length;
+                var foreColor = articlesCount> 0
+                    ? ConsoleColor.Green
+                    : ConsoleColor.Red;
+                Console.ForegroundColor = foreColor;
+                Console.WriteLine($"\t > {entryBySubject.SubjectDisplayName} [ARTICLES: {articlesCount}]");
 
-            return articles;
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                foreach (var article in entryBySubject.Articles)
+                {
+                    
+                    Console.WriteLine($"\t\t > {article.Title} | {article.UpdateDate}");
+
+                }
+                
+                
+                Console.ForegroundColor = ConsoleColor.White;
+                
+            }
         }
+        for (int i = 0; i <= journalEntries.Count; i++)
+        {
+            
+        }
+            //Console.WriteLine($"{entry.CategoryDisplayName} | {entry.SubjectDisplayName} | {entry.FolderName}");
+            //foreach (var article in entry.Articles)
+            //{
+            //    Console.WriteLine(article.Title);
+            //}
+        //}
+        
+        
+        /* TODO:
+         * - Table Of Content Generation
+         * - Timeline Generation
+         * - Metadata Reading/Writing
+         *  > PublishDate, UpdateDate, ContentHash
+         *  > Title, Description, Author
+         *
+         * 
+         */
     }
+}
 
     /* NOTE#1:
      * - Get entries's root folder => Get all subfolder's directories
@@ -161,4 +95,3 @@ internal class Program
      * NOTE-TO-MYSELF:
      * - Just make it work, STOP WANTING TO MAKE EVERYTHING AT ONCE
      */
-}
