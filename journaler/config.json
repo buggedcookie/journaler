@@ -1,21 +1,19 @@
 {
-  // WIP
-  "directories": {
-    "subjects-entries": "../entries",
-    "table-of-content-template": "./table-of-content.md.template",
-    "timeline-template": "./timeline.md.template"
+  "paths": {
+    "subjects-entries-directory": "../entries/",
+    "table-of-content-template": "./templates/table-of-content.md.template",
+    "table-of-content-file": "../README.md",
+    "timeline-template": "./templates/timeline.md.template",
+    "timeline-file": "./templates/TIMELINE.md"
   },
-  // WIP
   "aliases": {
     "web": "Web Development",
     "db": "Databases",
     "ai": "Artificial Intelligence",
     "ml": "Machine Learning",
-    "algorithms": "Algorithms",
-    "network": "Networking",
-    "security": "Cybersecurity",
-    "electronics": "Electronics",
-    "arduino": "Arduino Projects",
+    "nw": "Networking",
+    "hw": "Hardware & Electronics",
+    "arduino": "Arduino",
     "raspi": "Raspberry Pi",
     "game": "Game Development",
     "unity": "Unity Engine",
@@ -30,7 +28,10 @@
     "vr": "Virtual Reality",
     "physics": "Physics / Simulations",
     "math": "Mathematics",
-    "graphics": "Graphics / 3D",
+    "3d": "3D Modeling",
+    "dev": "Programming / Development",
+    "os": "Operating System",
+    "gfx": "Graphics",
     "misc": "Miscellaneous"
   }
 

@@ -10,8 +10,15 @@ namespace journaler;
  * TODO: Make the system better in the future
  */
 public static class JournalEntryFactory
-    {
+{
+        private static AppConfig? _appConfig = null;
 
+        private static Dictionary<string, string> _aliases = _appConfig?.Aliases ?? new Dictionary<string, string>();
+        public static void LoadConfigBecauseImLazy(AppConfig appConfig)
+        {
+            _appConfig = appConfig; 
+            _aliases = appConfig.Aliases;
+        }
         public static JournalEntry CreateEntryFromDirectory(string entryFolderDirectory)
         {
             FolderDirectory = entryFolderDirectory;
@@ -20,7 +27,7 @@ public static class JournalEntryFactory
             CategoryDisplayName = GetCategoryDisplayName(FolderName);
             SubjectDisplayName = GetSubjectDisplayName(FolderName);
             Articles = GetArticles().ToArray();
-
+            
             return new JournalEntry(FolderDirectory, FolderName, CategoryDisplayName, SubjectDisplayName, Articles);
         }
 
@@ -55,25 +62,41 @@ public static class JournalEntryFactory
 
         static string GetCategoryDisplayName(string folder)
         {
-            return string.Join("", folder
+            var categoryName = string.Join("", folder
                 .Split("-").First());
+            _aliases.TryGetValue(categoryName.ToLower().Trim(), out var displayName);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"{categoryName} - {displayName}");
+            Console.ResetColor();
+            return displayName ?? categoryName;
             //.Select(s => char.ToUpper(s[0]) + s.Substring(1)));
         }
 
         static string GetSubjectDisplayName(string folder)
         {
-            return string.Join(" ",
+            var subjectName = string.Join(" ",
                 folder.Split("-", StringSplitOptions.RemoveEmptyEntries).Skip(1)
                     .Select(s => char.ToUpper(s[0]) + s.Substring(1)));
+            
+            _aliases.TryGetValue(subjectName.ToLower().Trim(), out var displayName);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{subjectName} - {displayName}");
+            Console.ResetColor();
+            return displayName ?? subjectName;
         }
 
         static string GetArticleDisplayName(string folder)
         {
-            return string.Join(" ",
+            var articleName = string.Join(" ",
                     folder.Split("-", StringSplitOptions.RemoveEmptyEntries)
                         .Select(s => char.ToUpper(s[0]) + s.Substring(1)))
                 .Split(".")
                 .First();
+            _aliases.TryGetValue(articleName.ToLower().Trim(), out var displayName);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"{articleName} - {displayName}");
+            Console.ResetColor();
+            return displayName ?? articleName;
         }
         // "os", "arch", "linux.md" => Arch Linux
 
@@ -90,12 +113,7 @@ public static class JournalEntryFactory
             //if(!hasMetadata) AssumeArticleInfo(articleFileDirectory);
             
 
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(hasUpdatedContent);
-            Console.ResetColor();
-            
             WriteMetadata(articleFileDirectory, articleMetadata, hasUpdatedContent);
-            Console.ResetColor();
             return articleMetadata!;
             
             /*
@@ -126,7 +144,7 @@ public static class JournalEntryFactory
 
             var cleanedContent = GetArticleContentOnly(articleFileDirectory);
 
-            var updatedContent =  articleMetadata.GetMetaString(overrideUpdateDate).TrimEnd() + "\n" + cleanedContent.TrimEnd().TrimStart();;
+            var updatedContent =  articleMetadata.GetMetaString(overrideUpdateDate).Trim() + "\n" + cleanedContent.Trim();
             
             
 
@@ -143,7 +161,6 @@ public static class JournalEntryFactory
             string contentNoMetadata = RemoveArticleInfoFromContent(fileFullContent);
             string contentNoMetadataHash = CalculateArticleContentHash(contentNoMetadata);
             string contentBlock = match.Groups[1].Value;
-            Console.WriteLine(fileFullContent);
             string title = "undefined";
             string description = "undefined";
             string author = "undefined";
@@ -219,8 +236,9 @@ public static class JournalEntryFactory
                         break;
                 }
                 
-                
+                updateDate = hasDifferentContent && hasUpdateDate ? DateTime.Now : updateDate;    
             }
+            
             
             articleMetadata = new Article()
             {
@@ -257,7 +275,7 @@ public static class JournalEntryFactory
                 sb.Append(c);
             }
 
-            return sb.ToString().TrimEnd().TrimStart();
+            return sb.ToString().Trim();
         }
 
         static Article AssumeArticleInfo(string articleFileDirectory)
@@ -284,7 +302,7 @@ public static class JournalEntryFactory
 
         static string CalculateArticleContentHash(string fileContent)
         {
-            string sanitizedContent = RemoveArticleInfoFromContent(fileContent).TrimEnd().TrimStart();
+            string sanitizedContent = RemoveArticleInfoFromContent(fileContent).Trim();
             // Spent to fucking hours on that fucking shit, wanna know why?
             // TrimEnd and TrimStart, WELL APPPARENTTLYY for (not) stupid reasons if I DON'T new line character be fcking it up half the time
             // Made me wonder for 2 hours... why it was so random...
@@ -293,10 +311,9 @@ public static class JournalEntryFactory
 
             StringBuilder stringBuilder = new ();
 
-            foreach (var b in bytes){
+            foreach (var b in bytes)
                 stringBuilder.Append(b.ToString("x2"));
-                Console.Write($"{b:X2} ");
-            }
+            
             return stringBuilder.ToString();
         }
 

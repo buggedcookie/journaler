@@ -9,4 +9,19 @@
         <InvariantGlobalization>true</InvariantGlobalization>
     </PropertyGroup>
 
+    <ItemGroup>
+      <None Remove="config.json5" />
+      <None Include="config.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Remove="templates\table-of-content.md.template" />
+      <EmbeddedResource Include="templates\table-of-content.md.template">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="templates\timeline.md.template" />
+      <EmbeddedResource Include="templates\timeline.md.template">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+    </ItemGroup>
+
 </Project>
