@@ -1,4 +1,6 @@
-﻿namespace journaler;
+﻿using System.Text;
+
+namespace journaler;
 
 internal class Program
 {
@@ -9,46 +11,35 @@ internal class Program
         string entriesRootDirectory = "./Test";
         
         var journalEntries = JournalEntryFactory.GetEntriesFromDirectory(entriesRootDirectory);
-        //foreach (JournalEntry entry in journalEntries)
-        //{
-
+        
         var groupedEntries = journalEntries.OrderBy(c => c.CategoryDisplayName).GroupBy(entry => entry.CategoryDisplayName);
 
+        string tableOfContent = "";
+
+        StringBuilder stringBuilder = new();
         foreach (var entryByCategory in groupedEntries)
         {
-            Console.WriteLine($"> {entryByCategory.Key} [SUBJECTS: {entryByCategory.Count()}]");
+            stringBuilder.AppendLine("\n<details>");
+            stringBuilder.AppendLine($"<summary> Category: {entryByCategory.Key} | **❮ SUBJECTS: {entryByCategory.Count()} ❯** </summary>");
+            stringBuilder.AppendLine("\n| Table of Contents | Update Date |\n| -------- | -------- |");
+            
             foreach (var entryBySubject in entryByCategory.OrderBy(c => c.SubjectDisplayName).Select(t => t))
             {
+                
                 var articlesCount = entryBySubject.Articles.Length;
-                var foreColor = articlesCount> 0
-                    ? ConsoleColor.Green
-                    : ConsoleColor.Red;
-                Console.ForegroundColor = foreColor;
-                Console.WriteLine($"\t > {entryBySubject.SubjectDisplayName} [ARTICLES: {articlesCount}]");
+                stringBuilder.AppendLine($"| \U0001F4DA {entryBySubject.SubjectDisplayName} ❮ ARTICLES: {articlesCount} ❯");
 
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
                 foreach (var article in entryBySubject.Articles)
                 {
                     
-                    Console.WriteLine($"\t\t > {article.Title} | {article.UpdateDate}");
-
+                    stringBuilder.AppendLine($"| &nbsp;&nbsp;&nbsp; `\U0001F4C4 {article.Title}` | {article.UpdateDate:d} |");
                 }
-                
-                
-                Console.ForegroundColor = ConsoleColor.White;
-                
             }
+            stringBuilder.AppendLine("</details>");
         }
-        for (int i = 0; i <= journalEntries.Count; i++)
-        {
-            
-        }
-            //Console.WriteLine($"{entry.CategoryDisplayName} | {entry.SubjectDisplayName} | {entry.FolderName}");
-            //foreach (var article in entry.Articles)
-            //{
-            //    Console.WriteLine(article.Title);
-            //}
-        //}
+        
+        tableOfContent = "Bannaaaaaa"; //stringBuilder.ToString();
+        Console.WriteLine(tableOfContent);
         
         
         /* TODO:

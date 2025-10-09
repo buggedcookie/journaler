@@ -1,0 +1,37 @@
+{
+  // WIP
+  "directories": {
+    "subjects-entries": "../entries",
+    "table-of-content-template": "./table-of-content.md.template",
+    "timeline-template": "./timeline.md.template"
+  },
+  // WIP
+  "aliases": {
+    "web": "Web Development",
+    "db": "Databases",
+    "ai": "Artificial Intelligence",
+    "ml": "Machine Learning",
+    "algorithms": "Algorithms",
+    "network": "Networking",
+    "security": "Cybersecurity",
+    "electronics": "Electronics",
+    "arduino": "Arduino Projects",
+    "raspi": "Raspberry Pi",
+    "game": "Game Development",
+    "unity": "Unity Engine",
+    "unreal": "Unreal Engine",
+    "design": "Design & UI",
+    "music": "Music & Audio",
+    "writing": "Writing / Articles",
+    "tools": "Tools & Utilities",
+    "osx": "macOS",
+    "mobile": "Mobile Development",
+    "cloud": "Cloud Computing",
+    "vr": "Virtual Reality",
+    "physics": "Physics / Simulations",
+    "math": "Mathematics",
+    "graphics": "Graphics / 3D",
+    "misc": "Miscellaneous"
+  }
+
+}
