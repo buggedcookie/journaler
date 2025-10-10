@@ -1,7 +1,6 @@
 {
   "paths": {
     "use-github-path": false,
-    "github-branch": "main",
     "subjects-entries-directory": "../entries/",
     "table-of-content-template": "./templates/table-of-content.md.template",
     "table-of-content-file": "../README.md",

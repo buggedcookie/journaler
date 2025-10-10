@@ -83,7 +83,7 @@ internal class Program
                 foreach (var article in entryBySubject.Articles)
                 {
                     
-                    string path = appConfig.paths.UseGithubPath ? $"/blob/{appConfig.paths.GitHubBranch}/" + article.FilePath : article.FilePath;
+                    string path = appConfig.paths.UseGithubPath ? article.FilePath.Replace("../", String.Empty) : article.FilePath;
                     stringBuilder.AppendLine($"| &nbsp;&nbsp;&nbsp; \U0001F4C4 [`{article.Title}`]({path}) | {article.UpdateDate:d} |");
                 }
             }
