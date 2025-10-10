@@ -23,7 +23,7 @@ internal class Program
         }
         Console.WriteLine($"{entriesList}");
 
-        var tableOfContent = BuildTableOfContent(ref journalEntries);
+        var tableOfContent = BuildTableOfContent(ref journalEntries, config);
         Console.WriteLine(tableOfContent);
 
         string tocFilePath = config.paths.TableOfContentFile;
@@ -61,14 +61,12 @@ internal class Program
              */
     }
 
-    static string BuildTableOfContent(ref List<JournalEntry> journalEntries)
+    static string BuildTableOfContent(ref List<JournalEntry> journalEntries, AppConfig appConfig)
     {
 
         StringBuilder stringBuilder = new();
         
         var groupedEntries = journalEntries.OrderBy(c => c.CategoryDisplayName).GroupBy(entry => entry.CategoryDisplayName);
-        stringBuilder.AppendLine("\n<details>");
-        stringBuilder.AppendLine($"<summary> Table Of Content </summary>");
 
         foreach (var entryByCategory in groupedEntries)
         {
@@ -85,13 +83,13 @@ internal class Program
                 foreach (var article in entryBySubject.Articles)
                 {
                     
-                    stringBuilder.AppendLine($"| &nbsp;&nbsp;&nbsp; \U0001F4C4 [`{article.Title}`]({article.FilePath}) | {article.UpdateDate:d} |");
+                    string path = appConfig.paths.UseGithubPath ? $"/blob/{appConfig.paths.GitHubBranch}/" + article.FilePath : article.FilePath;
+                    stringBuilder.AppendLine($"| &nbsp;&nbsp;&nbsp; \U0001F4C4 [`{article.Title}`]({path}) | {article.UpdateDate:d} |");
                 }
             }
             stringBuilder.AppendLine("</details>");
             
         }
-        stringBuilder.AppendLine("</details>");
         
         return stringBuilder.ToString();
     }

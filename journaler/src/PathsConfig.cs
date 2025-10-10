@@ -5,8 +5,12 @@ namespace journaler;
 [JsonSerializable(typeof(PathsConfig))]
 public class PathsConfig
 {
-    [JsonPropertyName("subjects-entries-directory")] 
-    public string SubjectsEntriesDirectory { get; set; }
+    [JsonPropertyName("use-github-path")] public bool UseGithubPath { get; set; } = false;
+
+    [JsonPropertyName("subjects-entries-directory")]
+    public string SubjectsEntriesDirectory { get; set; } = "../entries/";
+
+    [JsonPropertyName("github-branch")] public string GitHubBranch { get; set; } = "";
 
     [JsonPropertyName("table-of-content-template")]
     public string TableOfContentTemplate { get; set; } = "./templates/table-of-content.md.template";
