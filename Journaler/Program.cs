@@ -1,46 +1,50 @@
-﻿using Journaler.Source;
+﻿using System.Data.SqlTypes;
+using System.IO.Compression;
+using System.Text;
+using Journaler.Entry;
 
 namespace Journaler;
 
-class Program
+internal static class Program
 {
-    static void Main(string[] args)
+    /*
+     * Refactoring idea
+     * classes: Category, Subject and Article maybe... Entry?
+     *
+     *
+     * IEntry:
+     *
+     * Category:
+     *  > Subject[] subjects
+     *  > string name
+     *  > string description
+     *  > AddSubject, RemoveSubject, FindSubject, GetAllArticles(),
+     * Subject:
+     *  > Category parent
+     *  > string name
+     *  > string description
+     *  > Article[] articles
+     *  > AddArticle, RemoveArticle, FindArticle, GetLatestArticle, GetArticleBy(filterType)
+     * Article:
+     *  > name
+     *  > description
+     *  > author
+     *  > publishDate
+     *  > updateDate
+     *  > isDirty
+     *  > hash
+     *  > Subject parent
+     *  > ChangeDescription
+     *  > ChangeName
+     *  > ChangePublishDate
+     *  > MarkUpdated
+     *  > ComputeContentHash
+     *  > Push
+     */
+    private static void Main(string[] args)
     {
-        LocalDirectorySourceOrigin ldso = new LocalDirectorySourceOrigin(99, "local");
-        string rootDir = "./Test";
-        if (Directory.Exists(rootDir))
-        {
-            var result = ldso.BuildSourceTree(rootDir);
-            PrintSourceNode(result.Tree.RootNode);
-        }
+        Category category = new();
+        Subject subject = new(category, []);
+        
     }
-
-    static void PrintSourceNode(SourceNode node, string indent = "", bool isLast = true)
-    {
-        string branch = isLast ? "└─" : "├─";
-
-        Console.WriteLine($"{indent}{branch} {node.Name} ({node.Parent?.Name})");
-
-        string childIndent = indent + (isLast ? "  " : "│ ");
-
-        for (int i = 0; i < node.Children.Count; i++)
-        {
-            bool lastChild = i == node.Children.Count - 1;
-            PrintSourceNode(node.Children[i], childIndent, lastChild);
-        }
-    }
-
 }
-
-
-
-// MultiSource something
-
-class SourceTreeFactory()
-{
-    
-}
-
-public record SourceTreeResult(SourceTree? Tree, bool Success, string? ErrorMessage);
-
-public record SourceTree(ISourceOriginStrategy SourceOrigin, SourceNode RootNode);

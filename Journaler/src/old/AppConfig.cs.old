@@ -1,0 +1,12 @@
+using System.Text.Json.Serialization;
+using journaler;
+
+public class AppConfig
+{
+    [JsonPropertyName("infos")] public InfosConfig infos { get; set; } = new();
+
+    [JsonPropertyName("paths")] public PathsConfig paths { get; set; } = new();
+
+    [JsonPropertyName("aliases")]
+    public Dictionary<string, string> Aliases { get; set; } = new Dictionary<string, string>();
+}

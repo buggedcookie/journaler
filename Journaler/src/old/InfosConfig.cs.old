@@ -1,0 +1,6 @@
+using System.Text.Json.Serialization;
+
+public class InfosConfig
+{
+    [JsonPropertyName("author")] public string author { get; set; } = string.Empty; 
+}
